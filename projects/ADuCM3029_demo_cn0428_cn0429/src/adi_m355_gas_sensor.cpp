@@ -253,8 +253,8 @@ SENSOR_RESULT M355_GAS::SetI2CAddr(uint8_t new_I2C_address)
  * @details This command provides temperature information in signed 16bit format
  * 		which is used for sensor temperature compensation. The data is
  * 		transmitted in integer format * 100:
- *  		For example,	0x09E4 =>	2532 / 100 =>	+25.32ºC
- *  				0xFB50 =>	-1200 / 100 =>	-12ºC
+ *  		For example,	0x09E4 =>	2532 / 100 =>	+25.32ï¿½C
+ *  				0xFB50 =>	-1200 / 100 =>	-12ï¿½C
  */
 SENSOR_RESULT M355_GAS::ReadTemperature(int16_t *pSensData)
 {
@@ -781,7 +781,7 @@ SENSOR_RESULT M355_GAS::ReadDataPPB(int32_t *pSensData)
 	SENSOR_RESULT Result = this->I2CReadWrite(READ, READ_AVG_PPB, pBuff, 4);
 	delay_ms(50);
 	Result = this->I2CReadWrite(READ, READ_AVG_PPB, pBuff, 4);
-	val = (pBuff[0] << 24) | (pBuff[1] << 16) | (pBuff[2] << 8) | pBuff[3];
+	val = (pBuff[0] << 16) | (pBuff[1] << 8) | pBuff[2];
 
 	*pSensData = val;
 
