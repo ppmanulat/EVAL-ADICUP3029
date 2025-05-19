@@ -932,6 +932,8 @@ static int32_t usr_uart_read_nonblock(struct uart_desc *desc, uint8_t *data,
 	uint32_t error;
 	bool rx_done;
 	int32_t ret;
+	uint8_t c;
+	uint8_t *p = &c;
 
 	if(!desc->has_callback) {
 		ret = adi_uart_IsRxBufferAvailable((ADI_UART_HANDLE const)h_uart_device,
@@ -942,8 +944,20 @@ static int32_t usr_uart_read_nonblock(struct uart_desc *desc, uint8_t *data,
 			return 0;
 		*rdy = 1;
 
-		return adi_uart_GetRxBuffer((ADI_UART_HANDLE const)h_uart_device,
-					    (void **)&data, &error);
+		ret =  adi_uart_GetRxBuffer((ADI_UART_HANDLE const)h_uart_device,
+					    (void **)&p, &error);
+		if(ret != ADI_UART_SUCCESS)
+			return ret;
+
+		*data = *p;
+		*rdy = 1;
+
+		ret = adi_uart_SubmitRxBuffer((ADI_UART_HANDLE const)h_uart_device, p, 1, false);
+		if (ret != ADI_UART_SUCCESS)
+		    return ret;
+
+		return 0;
+
 	} else {
 		if(uart_ping_flag == 2) {
 			*data = *ping_ptr;
