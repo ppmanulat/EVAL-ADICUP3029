@@ -782,6 +782,10 @@ SENSOR_RESULT M355_GAS::ReadDataPPB(int32_t *pSensData)
 	delay_ms(50);
 	Result = this->I2CReadWrite(READ, READ_AVG_PPB, pBuff, 4);
 	val = (pBuff[0] << 16) | (pBuff[1] << 8) | pBuff[2];
+	
+	if (pBuff[0] & 0x80){
+		val |= 0xFF000000;
+	}
 
 	*pSensData = val;
 
